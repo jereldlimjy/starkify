@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+model Frame {
+  id          BigInt    @id
+  fid         BigInt?
+  title       String
+  description String?
+  url         String    @unique
+  hash        Bytes     @unique
+  timestamp   DateTime? @db.Timestamp(6)
+  imageurl    String?
+
+  @@map("frames")
+}
+
+model Token {
+  id        Int     @id @default(autoincrement())
+  address   String  @unique
+  name      String
+  symbol    String
+  decimals  Int
+  imageUrl  String?
+
+  @@map("tokens")
+}

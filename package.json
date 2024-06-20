@@ -12,6 +12,7 @@
     "@avnu/avnu-sdk": "^2.0.0",
     "@dynamic-labs/sdk-react-core": "^2.2.0",
     "@dynamic-labs/starknet": "^2.2.0",
+    "@prisma/client": "^5.15.1",
     "@starknet-react/chains": "^0.1.7",
     "@starknet-react/core": "^2.8.2",
     "ethers": "^6.13.1",
@@ -31,6 +32,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.0.2",
     "postcss": "^8",
+    "prisma": "^5.15.1",
     "tailwindcss": "^3.4.4",
     "typescript": "^5"
   }
