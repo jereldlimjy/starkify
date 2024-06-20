@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { StarknetProvider } from "@/components/starknet-provider";
-import {
-  DynamicContextProvider,
-  FilterWallets,
-} from "@dynamic-labs/sdk-react-core";
-import { StarknetIcon } from "@dynamic-labs/iconic";
+import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
 import "./globals.css";
 
