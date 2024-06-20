@@ -1,52 +1,59 @@
 "use client";
-import WalletBar from "@/components/WalletBar";
+import { useProvider } from "@starknet-react/core";
+import { DynamicWidget, useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { StarknetWalletConnectorType } from "@dynamic-labs/starknet";
+import { fetchBuildExecuteTransaction, fetchQuotes } from "@avnu/avnu-sdk";
+
+const ETH_ADDRESS =
+  "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
+const STRK_ADDRESS =
+  "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
+const ONE = BigInt(100000000000000); // 0.0001
 
 export default function Home() {
+  const { primaryWallet } = useDynamicContext();
+  const { provider } = useProvider();
+
+  const fetchQuote = async (
+    sellAmount: bigint,
+    sellTokenAddress: string,
+    buyTokenAddress: string
+  ) => {
+    const params = {
+      sellTokenAddress,
+      buyTokenAddress,
+      sellAmount,
+      takerAddress: primaryWallet?.address,
+    };
+    return fetchQuotes(params).then((quotes) => quotes[0]);
+  };
+
+  const handleSwap = async () => {
+    const connector = primaryWallet?.connector as StarknetWalletConnectorType;
+    const signer = await connector.getSigner();
+
+    const quote1 = await fetchQuote(ONE, ETH_ADDRESS, STRK_ADDRESS);
+    const quote2 = await fetchQuote(ONE, STRK_ADDRESS, ETH_ADDRESS);
+    const quotes = [quote1, quote2];
+    const callsPromises = quotes.map(async (quote) => {
+      let result = await fetchBuildExecuteTransaction(quote.quoteId);
+      const { calls } = result;
+      return calls;
+    });
+    const calls = await Promise.all(callsPromises);
+
+    // You can use this flat calls array to execute
+    console.log(calls.flat());
+
+    const multicall = await signer?.execute(calls.flat());
+    await provider.waitForTransaction(multicall?.transaction_hash!!);
+  };
+
   return (
     <main className="flex flex-col items-center justify-center min-h-screen gap-12">
-      <WalletBar />
-      <p className="mb-2 text-lg">
-        Get started by editing&nbsp;
-        <code className="p-2 bg-gray-600 rounded">pages/index.tsx</code>
-      </p>
-      <div className="flex flex-row gap-12">
-        <a
-          className="p-4 rounded-md w-48 bg-black border flex flex-col items-center justify-center gap-6 group"
-          href="https://starknet.io/docs"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <img
-            src="https://pbs.twimg.com/profile_images/1656626805816565763/WyFDMG6u_400x400.png"
-            className="object-contain w-24 h-24"
-            alt="starknet-icon"
-          />
-          <p className="mb-2 text-lg text-center">
-            Starknet Documentation
-            <span className=" group-hover:font-bold transition-all ml-2 group-hover:ml-4">
-              {">"}
-            </span>
-          </p>
-        </a>
-        <a
-          className="p-4 rounded-md w-48 bg-black border flex flex-col items-center justify-center gap-6 group"
-          href="https://starknet-react.com/docs/getting-started"
-          target="_blank"
-          rel="norefferer"
-        >
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1150px-React-icon.svg.png"
-            className="object-contain w-24 h-24"
-            alt="react-icon"
-          />
-          <p className="mb-2 text-lg text-center">
-            Starknet React Documentation
-            <span className="group-hover:font-bold transition-all ml-2 group-hover:ml-4">
-              {">"}
-            </span>
-          </p>
-        </a>
-      </div>
+      <DynamicWidget />
+      {/* <button onClick={() => handleSwap} /> */}
+      <button onClick={handleSwap}>hello</button>
     </main>
   );
 }

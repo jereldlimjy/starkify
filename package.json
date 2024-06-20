@@ -9,13 +9,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@avnu/avnu-sdk": "^2.0.0",
+    "@dynamic-labs/sdk-react-core": "^2.2.0",
+    "@dynamic-labs/starknet": "^2.2.0",
     "@starknet-react/chains": "^0.1.7",
     "@starknet-react/core": "^2.8.2",
+    "ethers": "^6.13.1",
     "get-starknet-core": "^3.3.0",
     "next": "14.0.2",
+    "qs": "^6.12.1",
     "react": "^18",
     "react-dom": "^18",
-    "starknet": "^5.24.3"
+    "starknet": "^5.24.3",
+    "viem": "^2.14.2"
   },
   "devDependencies": {
     "@types/node": "^20",
