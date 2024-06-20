@@ -1,10 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useProvider } from "@starknet-react/core";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { StarknetWalletConnectorType } from "@dynamic-labs/starknet";
 import { fetchBuildExecuteTransaction, fetchQuotes } from "@avnu/avnu-sdk";
 import Navbar from "@/app/components/Navbar";
+import { useAtom } from "jotai";
+import { cartItemsAtom, isDrawerOpenAtom } from "./atoms/atoms";
 
 const ETH_ADDRESS =
   "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
@@ -37,7 +39,35 @@ export default function Home() {
   const { primaryWallet } = useDynamicContext();
   const { provider } = useProvider();
   const [tokens, setTokens] = useState<Token[]>([]);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [cartItems, setCartItems] = useAtom(cartItemsAtom);
+  const [isDrawerOpen, setIsDrawerOpen] = useAtom(isDrawerOpenAtom);
+  const handleCartClick = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  const drawerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      drawerRef.current &&
+      !drawerRef.current.contains(event.target as Node)
+    ) {
+      setIsDrawerOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isDrawerOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDrawerOpen]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,10 +77,6 @@ export default function Home() {
 
     fetchData();
   }, []);
-
-  const handleCartClick = () => {
-    setIsDrawerOpen((prev) => !prev);
-  };
 
   const fetchQuote = async (
     sellAmount: bigint,
@@ -108,7 +134,10 @@ export default function Home() {
 
       {/* Side Drawer */}
       {isDrawerOpen && (
-        <div className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-50 p-4">
+        <div
+          ref={drawerRef}
+          className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-50 p-4"
+        >
           <button
             onClick={handleCartClick}
             className="absolute top-2 right-2 text-gray-600"
@@ -117,6 +146,15 @@ export default function Home() {
           </button>
           <h2 className="text-xl font-semibold mb-4">Cart</h2>
           {/* Cart contents go here */}
+          {cartItems.length === 0 ? (
+            <p>Your cart is empty.</p>
+          ) : (
+            <ul>
+              {cartItems.map((item: any) => (
+                <li key={item.id}>{item.name}</li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </main>

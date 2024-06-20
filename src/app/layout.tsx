@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { StarknetProvider } from "@/app/components/starknet-provider";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
+import { Provider } from "jotai";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,7 +27,9 @@ export default function RootLayout({
             walletConnectors: [StarknetWalletConnectors],
           }}
         >
-          <StarknetProvider>{children}</StarknetProvider>
+          <StarknetProvider>
+            <Provider>{children}</Provider>
+          </StarknetProvider>
         </DynamicContextProvider>
       </body>
     </html>

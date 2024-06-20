@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "vercel-build": "prisma generate && next build"
   },
   "dependencies": {
     "@avnu/avnu-sdk": "^2.0.0",
@@ -17,6 +18,7 @@
     "@starknet-react/core": "^2.8.2",
     "ethers": "^6.13.1",
     "get-starknet-core": "^3.3.0",
+    "jotai": "^2.8.3",
     "next": "14.0.2",
     "qs": "^6.12.1",
     "react": "^18",
