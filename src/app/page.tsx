@@ -23,7 +23,11 @@ type Token = {
 
 const getTokens = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/tokens");
+    const response = await fetch(
+      process.env.NODE_ENV === "development"
+        ? "http://localhost:3000/api/tokens"
+        : "https://starkify.vercel.app/api/tokens"
+    );
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
