@@ -1,17 +1,10 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
-import { useProvider } from "@starknet-react/core";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
-import { StarknetWalletConnectorType } from "@dynamic-labs/starknet";
-import { fetchBuildExecuteTransaction, fetchQuotes } from "@avnu/avnu-sdk";
+import { useEffect, useState } from "react";
 import Navbar from "@/app/components/Navbar";
 import { useAtom } from "jotai";
 import { cartItemsAtom, isDrawerOpenAtom } from "./atoms/atoms";
 import SideDrawer from "./components/SideDrawer";
-
-const ETH_ADDRESS =
-  "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
-const ONE = BigInt(100000000000000); // 0.0001
+import { addToCart } from "./utils/cartUtils";
 
 type Token = {
   id: number;
@@ -41,15 +34,9 @@ const getTokens = async () => {
 };
 
 export default function Home() {
-  const { primaryWallet } = useDynamicContext();
-  const { provider } = useProvider();
   const [tokens, setTokens] = useState<Token[]>([]);
   const [cartItems, setCartItems] = useAtom(cartItemsAtom);
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(isDrawerOpenAtom);
-
-  const handleCartClick = () => {
-    setIsDrawerOpen(!isDrawerOpen);
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,57 +47,42 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const fetchQuote = async (
-    sellAmount: bigint,
-    sellTokenAddress: string,
-    buyTokenAddress: string
-  ) => {
-    const params = {
-      sellTokenAddress,
-      buyTokenAddress,
-      sellAmount,
-      takerAddress: primaryWallet?.address,
-    };
-    return fetchQuotes(params).then((quotes) => quotes[0]);
+  const handleCartClick = () => {
+    setIsDrawerOpen(!isDrawerOpen);
   };
 
-  const handleSwap = async () => {
-    const connector = primaryWallet?.connector as StarknetWalletConnectorType;
-    const signer = await connector.getSigner();
-
-    const quote1 = await fetchQuote(ONE, ETH_ADDRESS, tokens[0].address);
-    const quote2 = await fetchQuote(ONE, ETH_ADDRESS, tokens[1].address);
-    const quotes = [quote1, quote2];
-    const callsPromises = quotes.map(async (quote) => {
-      let result = await fetchBuildExecuteTransaction(quote.quoteId);
-      const { calls } = result;
-      return calls;
-    });
-    const calls = await Promise.all(callsPromises);
-
-    const multicall = await signer?.execute(calls.flat());
-    await provider.waitForTransaction(multicall?.transaction_hash!!);
+  const handleAddToCart = (token: Token) => {
+    setCartItems((prevCart) =>
+      addToCart(prevCart, token.address, token.symbol, token.imageUrl ?? "", 1)
+    );
   };
 
   return (
     <main>
       <Navbar handleCartClick={handleCartClick} />
       <div className="absolute top-[72px] w-full">
-        <button onClick={handleSwap}>swap</button>
-        <div className="flex flex-col gap-4">
-          {tokens.map((token) => (
-            <div key={token.id} className="flex gap-4">
-              <img
-                src={token?.imageUrl ?? "https://via.placeholder.com/150"}
-                alt={token.name}
-                className="w-8 h-8 rounded-full"
-              />
-              <div>
-                <p>{token.name}</p>
-                <p>{token.symbol}</p>
+        <div className="flex justify-center">
+          <div className="flex flex-col gap-4">
+            {tokens.map((token) => (
+              <div key={token.id} className="flex gap-4">
+                <img
+                  src={token?.imageUrl ?? "https://via.placeholder.com/150"}
+                  alt={token.name}
+                  className="w-8 h-8 rounded-full"
+                />
+                <div>
+                  <p>{token.name}</p>
+                  <p>{token.symbol}</p>
+                  <button
+                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+                    onClick={() => handleAddToCart(token)}
+                  >
+                    Add to cart
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
