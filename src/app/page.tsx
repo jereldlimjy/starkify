@@ -136,31 +136,35 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Side Drawer */}
+      {/* Overlay */}
       {isDrawerOpen && (
-        <div
-          ref={drawerRef}
-          className="fixed top-0 right-0 w-64 h-full bg-white shadow-lg z-50 p-4"
-        >
-          <button
-            onClick={handleCartClick}
-            className="absolute top-2 right-2 text-gray-600"
-          >
-            Close
-          </button>
-          <h2 className="text-xl font-semibold mb-4">Cart</h2>
-          {/* Cart contents go here */}
-          {cartItems.length === 0 ? (
-            <p>Your cart is empty.</p>
-          ) : (
-            <ul>
-              {cartItems.map((item: any) => (
-                <li key={item.id}>{item.name}</li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <div className="fixed inset-0 z-40 bg-gray-100 bg-opacity-75 transition-opacity" />
       )}
+
+      {/* Side Drawer */}
+      <div
+        ref={drawerRef}
+        className={`fixed top-0 right-0 w-[35vw] h-full bg-white shadow-lg z-50 p-4 ease-in-out duration-500 transform ${
+          isDrawerOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <button
+          onClick={handleCartClick}
+          className="absolute top-2 right-2 text-gray-600"
+        >
+          Close
+        </button>
+        <h2 className="text-xl font-semibold mb-4">Cart</h2>
+        {cartItems.length === 0 ? (
+          <p>Your cart is empty.</p>
+        ) : (
+          <ul>
+            {cartItems.map((item: any) => (
+              <li key={item.id}>{item.name}</li>
+            ))}
+          </ul>
+        )}
+      </div>
     </main>
   );
 }
