@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { StarknetProvider } from "@/app/components/starknet-provider";
+import { StarknetProvider } from "@/app/components/StarknetProvider";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
 import { Provider } from "jotai";

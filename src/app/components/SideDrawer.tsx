@@ -82,11 +82,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
       const signer = await connector.getSigner();
 
       const quotesPromises = cartItems.map((item) =>
-        fetchQuote(
-          BigInt(item.buyAmount * 10 ** item.decimals),
-          ETH_ADDRESS,
-          item.address
-        )
+        fetchQuote(BigInt(item.buyAmount * 10 ** 18), ETH_ADDRESS, item.address)
       );
 
       const quotes = await Promise.all(quotesPromises);
@@ -101,6 +97,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
       const multicall = await signer?.execute(calls.flat());
       await provider.waitForTransaction(multicall?.transaction_hash!!);
     } catch (err) {
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
