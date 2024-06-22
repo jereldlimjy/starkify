@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { mainnet } from "@starknet-react/chains";
 import {
   StarknetConfig,
+  alchemyProvider,
   argent,
   braavos,
   publicProvider,
@@ -24,7 +25,9 @@ export function StarknetProvider({ children }: { children: ReactNode }) {
   return (
     <StarknetConfig
       chains={[mainnet]}
-      provider={publicProvider()}
+      provider={alchemyProvider({
+        apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ?? "",
+      })}
       connectors={connectors}
       explorer={voyager}
     >

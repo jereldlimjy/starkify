@@ -10,3 +10,37 @@ html, body {
   height: 100%;
   width: 100%;
 }
+
+@layer base {
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number'] {
+    -webkit-appearance: none;
+    margin: 0;
+    -moz-appearance: textfield !important;
+  }
+}
+
+::-webkit-scrollbar {
+  max-width: 8px;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+  margin: 2px 0;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 7px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 7px;
+}

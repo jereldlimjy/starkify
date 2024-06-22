@@ -1,45 +1,27 @@
+import { BuyToken, Token } from "../types";
+
 export const addToCart = (
-  cart: {
-    tokenAddress: string;
-    symbol: string;
-    imageUrl: string;
-    buyAmount: number;
-  }[],
-  tokenAddress: string,
-  symbol: string,
-  imageUrl: string,
+  cart: BuyToken[],
+  token: Token,
   buyAmount: number
 ) => {
-  const existingItem = cart.find((item) => item.tokenAddress === tokenAddress);
+  const existingItem = cart.find((item) => item.address === token.address);
   if (!existingItem) {
-    return [...cart, { tokenAddress, symbol, imageUrl, buyAmount }];
+    return [...cart, { ...token, buyAmount }];
   }
   return cart;
 };
 
-export const removeFromCart = (
-  cart: {
-    tokenAddress: string;
-    symbol: string;
-    imageUrl: string;
-    buyAmount: number;
-  }[],
-  tokenAddress: string
-) => {
-  return cart.filter((item) => item.tokenAddress !== tokenAddress);
+export const removeFromCart = (cart: BuyToken[], tokenAddress: string) => {
+  return cart.filter((item) => item.address !== tokenAddress);
 };
 
 export const updateCartAmount = (
-  cart: {
-    tokenAddress: string;
-    symbol: string;
-    imageUrl: string;
-    buyAmount: number;
-  }[],
+  cart: BuyToken[],
   tokenAddress: string,
   buyAmount: number
 ) => {
   return cart.map((item) =>
-    item.tokenAddress === tokenAddress ? { ...item, buyAmount } : item
+    item.address === tokenAddress ? { ...item, buyAmount } : item
   );
 };

@@ -1,11 +1,5 @@
 import { atom } from "jotai";
+import { BuyToken } from "../types";
 
-export const cartItemsAtom = atom<
-  {
-    tokenAddress: string;
-    symbol: string;
-    imageUrl: string;
-    buyAmount: number;
-  }[]
->([]);
+export const cartItemsAtom = atom<BuyToken[]>([]);
 export const isDrawerOpenAtom = atom(false);

@@ -5,15 +5,7 @@ import { useAtom } from "jotai";
 import { cartItemsAtom, isDrawerOpenAtom } from "./atoms/atoms";
 import SideDrawer from "./components/SideDrawer";
 import { addToCart } from "./utils/cartUtils";
-
-type Token = {
-  id: number;
-  address: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  imageUrl?: string | null;
-};
+import { Token } from "./types";
 
 const getTokens = async () => {
   try {
@@ -52,9 +44,7 @@ export default function Home() {
   };
 
   const handleAddToCart = (token: Token) => {
-    setCartItems((prevCart) =>
-      addToCart(prevCart, token.address, token.symbol, token.imageUrl ?? "", 1)
-    );
+    setCartItems((prevCart) => addToCart(prevCart, token, 1));
   };
 
   return (
