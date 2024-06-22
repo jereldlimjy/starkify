@@ -177,7 +177,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
             className="bg-blue-500 hover:bg-blue-600 text-white mb-4 p-4 rounded flex justify-center items-center"
             onClick={handleCheckout}
           >
-            {isLoading ? <SpinnerIcon /> : "Checkout"}
+            {isLoading ? <SpinnerIcon className="animate-spin" /> : "Checkout"}
           </button>
         ) : (
           <button className="bg-gray-100 hover:bg-gray-200 mb-4 p-4 rounded">
