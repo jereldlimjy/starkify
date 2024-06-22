@@ -1,11 +1,19 @@
-const CartIcon = ({ className }: { className?: string }) => {
+const CartIcon = ({
+  className,
+  height,
+  width,
+}: {
+  className?: string;
+  height?: string;
+  width?: string;
+}) => {
   return (
     <svg
       className={className}
       fill="#000000"
       viewBox="0 0 256 256"
-      height="38px"
-      width="38px"
+      height={height ? `${height}px` : `38px`}
+      width={width ? `${width}px` : `38px`}
       xmlns="http://www.w3.org/2000/svg"
       stroke="#000000"
       strokeWidth="5.12"

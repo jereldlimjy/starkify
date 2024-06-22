@@ -60,7 +60,7 @@ export default function Home() {
   return (
     <main>
       <Navbar handleCartClick={handleCartClick} />
-      <div className="absolute top-[72px] w-full">
+      <div className="absolute top-[72px] w-full bg-no-repeat bg-cover bg-center">
         <div className="flex justify-center">
           <div className="flex flex-col gap-4">
             {tokens.map((token) => (
