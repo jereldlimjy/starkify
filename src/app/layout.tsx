@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { StarknetProvider } from "@/app/components/StarknetProvider";
 import { DynamicContextProvider } from "@dynamic-labs/sdk-react-core";
 import { StarknetWalletConnectors } from "@dynamic-labs/starknet";
+import { Analytics } from "@vercel/analytics/react";
 import { Provider } from "jotai";
 import "./globals.css";
 
@@ -38,7 +39,10 @@ export default function RootLayout({
           }}
         >
           <StarknetProvider>
-            <Provider>{children}</Provider>
+            <Provider>
+              {children}
+              <Analytics />
+            </Provider>
           </StarknetProvider>
         </DynamicContextProvider>
       </body>
