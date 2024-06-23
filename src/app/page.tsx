@@ -89,7 +89,7 @@ export default function Home() {
                 </div>
 
                 <button
-                  className="absolute top-2 right-2"
+                  className="absolute top-2 right-2 transform hover:scale-105"
                   onClick={() => handleAddToCart(token)}
                   aria-label="Add to cart"
                 >
