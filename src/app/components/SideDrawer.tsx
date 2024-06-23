@@ -161,6 +161,11 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
 
         {/* Cart items */}
         <div className="grow overflow-y-auto overflow-x-hidden">
+          {/* Note */}
+          <div className="px-4 py-2 bg-pink-100 text-pink-800 font-medium text-sm text-center rounded mb-2">
+            Note: Amounts are denominated in ETH
+          </div>
+
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center mt-12">
               <SadIcon height="80" width="80" />
@@ -187,7 +192,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
                     onChange={(e) =>
                       handleAmountChange(item.address, Number(e.target.value))
                     }
-                    className="w-20 p-1 border rounded"
+                    className="w-24 p-1 border rounded"
                   />
                   <button onClick={() => handleRemove(item.address)}>
                     <RemoveItemIcon className="rounded-full hover:bg-gray-100" />

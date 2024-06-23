@@ -37,7 +37,7 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #cdcdcd;
   border-radius: 7px;
 }
 
