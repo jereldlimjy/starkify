@@ -550,6 +550,8 @@ async function main() {
   const res = await fetch(FIBROUS_TOKEN_ENDPOINT);
   const tokens = await res.json();
 
+  const addresses: any = [];
+
   // add avnu tokens
   AVNU_OFFICIAL_TOKENS.forEach((token) => {
     tokens.unshift({
@@ -564,76 +566,81 @@ async function main() {
   const numTokens = tokens.length;
 
   for (let i = 0; i < tokens.length; i++) {
-    console.log(`Fetching token ${i + 1} of ${numTokens}`);
+    try {
+      console.log(`Fetching token ${i + 1} of ${numTokens}`);
 
-    const token = tokens[i];
+      const token = tokens[i];
 
-    // Check if imageUrl is available
-    let image = token.imageUrl;
-    let address = token.address;
+      // Check if imageUrl is available
+      let image = token.imageUrl;
+      let address = token.address;
 
-    // Check if token in coingecko list
-    const coingeckoToken = COINGECKO_STARKNET_TOKENS.find(
-      (x: any) => x.address.slice(-63) === token.address.slice(-63)
-    );
-
-    if (coingeckoToken) {
-      image = coingeckoToken.image;
-      address = coingeckoToken.address;
-    }
-
-    // Else, check if token in avnu list
-    if (!image) {
-      const avnuToken = AVNU_OFFICIAL_TOKENS.find(
+      // Check if token in coingecko list
+      const coingeckoToken = COINGECKO_STARKNET_TOKENS.find(
         (x: any) => x.address.slice(-63) === token.address.slice(-63)
       );
 
-      if (avnuToken) {
-        image = avnuToken.logoUri;
-        address = avnuToken.address;
+      if (coingeckoToken) {
+        image = coingeckoToken.image;
+        address = coingeckoToken.address;
       }
-    }
 
-    // Skip token if no image
-    if (!image) continue;
+      // Else, check if token in avnu list
+      if (!image) {
+        const avnuToken = AVNU_OFFICIAL_TOKENS.find(
+          (x: any) => x.address.slice(-63) === token.address.slice(-63)
+        );
 
-    // Fetch ETH price for the token
-    const ethPrice = await fetchPrices({
-      sellTokenAddress: ETH_TOKEN_ADDRESS,
-      buyTokenAddress: token.address,
-      sellAmount: ONE, // 1
-    });
+        if (avnuToken) {
+          image = avnuToken.logoUri;
+          address = avnuToken.address;
+        }
+      }
 
-    // Skip token if no price
-    if (!ethPrice.length) continue;
+      // Skip token if no image
+      if (!image) continue;
 
-    // Add token to the database
-    try {
-      await prisma.token.create({
-        data: {
-          address,
-          name: token.name,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          imageUrl: image,
-        },
+      // Fetch ETH price for the token
+      const ethPrice = await fetchPrices({
+        sellTokenAddress: ETH_TOKEN_ADDRESS,
+        buyTokenAddress: token.address,
+        sellAmount: ONE, // 1
       });
 
-      console.log(`Token ${token.symbol} added to the database.`);
-      console.log({
-        address,
-        name: token.name,
-        symbol: token.symbol,
-        decimals: token.decimals,
-        imageUrl: image,
-      });
-    } catch (err) {
-      console.error(err);
-    }
+      // Skip token if no price
+      if (!ethPrice.length) continue;
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+      addresses.push(address);
+
+      // Add token to the database
+      // try {
+      //   await prisma.token.create({
+      //     data: {
+      //       address,
+      //       name: token.name,
+      //       symbol: token.symbol,
+      //       decimals: token.decimals,
+      //       imageUrl: image,
+      //     },
+      //   });
+
+      //   console.log(`Token ${token.symbol} added to the database.`);
+      //   console.log({
+      //     address,
+      //     name: token.name,
+      //     symbol: token.symbol,
+      //     decimals: token.decimals,
+      //     imageUrl: image,
+      //   });
+      // } catch (err) {
+      //   console.error(err);
+      // }
+
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } catch (err) {}
   }
 
+  console.log("Addresses:", addresses);
   await prisma.$disconnect();
 }
 

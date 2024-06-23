@@ -6,13 +6,16 @@ import { cartItemsAtom, isDrawerOpenAtom } from "./atoms/atoms";
 import SideDrawer from "./components/SideDrawer";
 import { addToCart } from "./utils/cartUtils";
 import { Token } from "./types";
+import CartIcon from "./components/CartIcon";
+import { formatCurrency } from "@coingecko/cryptoformat";
 
 const getTokens = async () => {
   try {
     const response = await fetch(
       process.env.NODE_ENV === "development"
         ? "http://localhost:3000/api/tokens"
-        : "https://starkify.vercel.app/api/tokens"
+        : "https://starkify.vercel.app/api/tokens",
+      { next: { revalidate: 60 } }
     );
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -33,6 +36,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await getTokens();
+
       setTokens(res);
     };
 
@@ -52,24 +56,45 @@ export default function Home() {
       <Navbar handleCartClick={handleCartClick} />
       <div className="pt-[72px] w-full">
         <div className="flex justify-center">
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-12">
             {tokens.map((token) => (
-              <div key={token.id} className="flex gap-4">
+              <div
+                key={token.id}
+                className="flex relative gap-4 p-4 bg-white bg-opacity-60 rounded-lg shadow hover:shadow-md transition"
+              >
                 <img
-                  src={token?.imageUrl ?? "https://via.placeholder.com/150"}
+                  src={token.imageUrl ?? "https://via.placeholder.com/150"}
                   alt={token.name}
-                  className="w-8 h-8 rounded-full"
+                  className="w-12 h-12 rounded-full"
                 />
-                <div>
-                  <p>{token.name}</p>
-                  <p>{token.symbol}</p>
-                  <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
-                    onClick={() => handleAddToCart(token)}
-                  >
-                    Add to cart
-                  </button>
+                <div className="flex-1">
+                  <p className="text-md font-semibold mr-12">{token.name}</p>
+                  <p className="text-gray-500">{token.symbol}</p>
+                  <p className="mt-2 text-sm text-gray-700">
+                    <span className="font-medium">Price: </span>
+                    {token?.priceUsd
+                      ? formatCurrency(parseFloat(token.priceUsd), "USD", "en")
+                      : "-"}
+                  </p>
+                  <p className="mt-1 text-sm text-gray-700">
+                    <span className="font-medium">Volume (24h): </span>
+                    {token?.volumeUsd24hr
+                      ? formatCurrency(
+                          parseFloat(token.volumeUsd24hr),
+                          "USD",
+                          "en"
+                        )
+                      : "-"}
+                  </p>
                 </div>
+
+                <button
+                  className="absolute top-2 right-2"
+                  onClick={() => handleAddToCart(token)}
+                  aria-label="Add to cart"
+                >
+                  <CartIcon height="30" width="30" />
+                </button>
               </div>
             ))}
           </div>

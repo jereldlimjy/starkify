@@ -5,6 +5,8 @@ export type Token = {
   symbol: string;
   decimals: number;
   imageUrl?: string | null;
+  priceUsd?: string;
+  volumeUsd24hr?: string;
 };
 
 export interface BuyToken extends Token {

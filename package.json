@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@avnu/avnu-sdk": "^2.0.0",
+    "@coingecko/cryptoformat": "^0.8.1",
     "@dynamic-labs/sdk-react-core": "^2.2.0",
     "@dynamic-labs/starknet": "^2.2.0",
     "@prisma/client": "^5.15.1",

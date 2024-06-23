@@ -213,9 +213,11 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
             {isLoading ? <SpinnerIcon className="animate-spin" /> : "Checkout"}
           </button>
         ) : (
-          <button className="bg-gray-100 hover:bg-gray-200 mb-4 p-4 rounded">
-            <DynamicConnectButton>Connect Wallet</DynamicConnectButton>
-          </button>
+          <div>
+            <DynamicConnectButton buttonClassName="bg-gray-100 w-full hover:bg-gray-200 mb-4 p-4 rounded">
+              Connect Wallet
+            </DynamicConnectButton>
+          </div>
         )}
       </div>
     </>
