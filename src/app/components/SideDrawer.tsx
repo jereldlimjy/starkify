@@ -108,7 +108,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
       await provider.waitForTransaction(multicall?.transaction_hash!!);
 
       const buyAmountMap: any = quotes.reduce((acc, curr) => {
-        return { ...acc, [curr.buyTokenAddress]: curr.buyAmount };
+        return { ...acc, [curr.buyTokenAddress.slice(-63)]: curr.buyAmount };
       }, {});
 
       const order: Order = {
@@ -118,7 +118,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
           decimals: item.decimals,
           symbol: item.symbol,
           imageUrl: item.imageUrl ?? "",
-          buyAmount: buyAmountMap[item.address].toString(),
+          buyAmount: buyAmountMap[item.address.slice(-63)].toString(),
           sellAmount: item.buyAmount, // TODO: change to sellAmount and sellToken for clarity
         })),
         txnHash: multicall?.transaction_hash!!,

@@ -104,7 +104,7 @@ const OrderHistory = () => {
                             target="_blank"
                             rel="noopener noreferrer"
                             href={`https://voyager.online/tx/${order.txnHash}`}
-                            className="text-blue-600 hover:underline"
+                            className="text-[#1c1c84] hover:underline"
                           >
                             {order.txnHash}
                           </a>

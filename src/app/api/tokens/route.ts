@@ -17,7 +17,11 @@ export async function GET(
   // Fetch price data from gecko terminal
   const GECKO_TERMINAL_ENDPOINT =
     "https://api.geckoterminal.com/api/v2/networks/starknet-alpha/tokens/multi";
-  const addresses = tokens.map((token: Token) => token.address);
+  const addresses = tokens.map((token: Token) =>
+    token.address.length === 66
+      ? `0x${token.address.slice(-63)}`
+      : token.address
+  );
 
   const response = await fetch(
     `${GECKO_TERMINAL_ENDPOINT}/${addresses.join(",")}`
@@ -28,7 +32,7 @@ export async function GET(
     const attributes = curr.attributes;
     return {
       ...acc,
-      [attributes.address]: {
+      [attributes.address.slice(-63)]: {
         priceUsd: attributes.price_usd,
         volumeUsd24hr: attributes.volume_usd.h24,
       },
@@ -36,7 +40,7 @@ export async function GET(
   }, {});
 
   tokens.forEach((token: Token) => {
-    const tokenData = geckoTerminalDataMap[token.address];
+    const tokenData = geckoTerminalDataMap[token.address.slice(-63)];
 
     if (tokenData) {
       token.priceUsd = tokenData.priceUsd;
