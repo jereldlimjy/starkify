@@ -8,7 +8,7 @@ const Navbar = ({ handleCartClick }: { handleCartClick: any }) => {
   const [cartItems] = useAtom(cartItemsAtom);
 
   return (
-    <nav className="flex fixed justify-between items-center w-full h-[72px] z-10">
+    <nav className="flex fixed justify-between bg-[#E6F0FF] border-b items-center w-full h-[72px] z-10">
       <Link href="/">
         <div className="flex h-full items-center py-4 px-6">
           <span className="text-xl tracking-widest">starkify</span>

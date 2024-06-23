@@ -56,7 +56,7 @@ export default function Home() {
       <Navbar handleCartClick={handleCartClick} />
       <div className="pt-[72px] w-full">
         <div className="flex justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-12">
             {tokens.map((token) => (
               <div
                 key={token.id}
