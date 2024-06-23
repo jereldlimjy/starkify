@@ -5,13 +5,21 @@ import { useAtom } from "jotai";
 import { isDrawerOpenAtom } from "../atoms/atoms";
 import SideDrawer from "../components/SideDrawer";
 import { OrderDetails } from "../types";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { ethers } from "ethers";
 
 const OrderHistory = () => {
+  const { primaryWallet } = useDynamicContext();
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(isDrawerOpenAtom);
   const [orders, setOrders] = useState<OrderDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!primaryWallet) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchTransactionData = async (hash: string) => {
       const response = await fetch(
         `https://api.voyager.online/beta/txns/${hash}`,
@@ -38,7 +46,8 @@ const OrderHistory = () => {
     };
 
     const loadOrders = async () => {
-      const savedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+      const storageKey = `starkify-orders-${primaryWallet.address}`;
+      const savedOrders = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
       try {
         const ordersWithTxnData = await Promise.all(
@@ -56,7 +65,7 @@ const OrderHistory = () => {
     };
 
     loadOrders();
-  }, []);
+  }, [primaryWallet]);
 
   const handleCartClick = () => {
     setIsDrawerOpen(!isDrawerOpen);
@@ -142,7 +151,15 @@ const OrderHistory = () => {
                           <div className="flex-1">
                             <p className="font-medium">{token.symbol}</p>
                             <p className="text-sm text-gray-600">
-                              Amount: {token.buyAmount} ETH
+                              Amount Bought:{" "}
+                              {ethers.formatUnits(
+                                token.buyAmount ?? "0",
+                                token.decimals
+                              )}{" "}
+                              {token.symbol}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                              Amount Spent: {token.sellAmount} ETH
                             </p>
                           </div>
                         </li>

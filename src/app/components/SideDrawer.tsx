@@ -67,8 +67,12 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
   };
 
   const saveOrderToLocalStorage = (order: Order) => {
-    const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-    localStorage.setItem("orders", JSON.stringify([...existingOrders, order]));
+    const storageKey = `starkify-orders-${primaryWallet?.address}`;
+    const existingOrders = JSON.parse(localStorage.getItem(storageKey) || "[]");
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify([...existingOrders, order])
+    );
   };
 
   const handleRemove = (tokenAddress: string) => {
@@ -103,13 +107,19 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
       const multicall = await signer?.execute(calls.flat());
       await provider.waitForTransaction(multicall?.transaction_hash!!);
 
+      const buyAmountMap: any = quotes.reduce((acc, curr) => {
+        return { ...acc, [curr.buyTokenAddress]: curr.buyAmount };
+      }, {});
+
       const order: Order = {
         date: new Date().toISOString(),
         tokens: cartItems.map((item) => ({
           address: item.address,
+          decimals: item.decimals,
           symbol: item.symbol,
           imageUrl: item.imageUrl ?? "",
-          buyAmount: item.buyAmount,
+          buyAmount: buyAmountMap[item.address].toString(),
+          sellAmount: item.buyAmount, // TODO: change to sellAmount and sellToken for clarity
         })),
         txnHash: multicall?.transaction_hash!!,
       };

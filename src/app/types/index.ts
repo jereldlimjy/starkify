@@ -16,8 +16,10 @@ export type Order = {
   tokens: {
     address: string;
     symbol: string;
+    decimals: number;
     imageUrl: string;
-    buyAmount: number;
+    buyAmount: string;
+    sellAmount: number;
   }[];
   txnHash: string;
 };
