@@ -21,3 +21,11 @@ export type Order = {
   }[];
   txnHash: string;
 };
+
+export interface OrderDetails extends Order {
+  blockNumber?: number | null;
+  type?: string;
+  timestamp?: number;
+  status?: string;
+  actualFee?: string;
+}

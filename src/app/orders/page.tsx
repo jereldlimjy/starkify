@@ -4,17 +4,58 @@ import Navbar from "@/app/components/Navbar";
 import { useAtom } from "jotai";
 import { isDrawerOpenAtom } from "../atoms/atoms";
 import SideDrawer from "../components/SideDrawer";
-import { Order } from "../types";
+import { OrderDetails } from "../types";
 
 const OrderHistory = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(isDrawerOpenAtom);
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderDetails[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const savedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
-    setOrders(savedOrders);
-    setIsLoading(false);
+    const fetchTransactionData = async (hash: string) => {
+      const response = await fetch(
+        `https://api.voyager.online/beta/txns/${hash}`,
+        {
+          headers: {
+            "X-API-KEY": process.env.NEXT_PUBLIC_VOYAGER_API_KEY ?? "",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        return {};
+      }
+
+      const data = await response.json();
+
+      return {
+        blockNumber: data.blockNumber,
+        type: data.type,
+        timestamp: data.timestamp,
+        status: data.status,
+        actualFee: data.actualFee,
+      };
+    };
+
+    const loadOrders = async () => {
+      const savedOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+      try {
+        const ordersWithTxnData = await Promise.all(
+          savedOrders.map(async (order: OrderDetails) => {
+            const txnData = await fetchTransactionData(order.txnHash);
+            return { ...order, ...txnData };
+          })
+        );
+        setOrders(ordersWithTxnData);
+      } catch (error) {
+        console.error("Error fetching transaction data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadOrders();
   }, []);
 
   const handleCartClick = () => {
@@ -28,9 +69,9 @@ const OrderHistory = () => {
         <div className="container mx-auto p-6">
           <h2 className="text-2xl underline mb-6 text-center">Order History</h2>
           {isLoading ? (
-            <p>Loading...</p>
+            <p className="text-center">Loading...</p>
           ) : orders.length === 0 ? (
-            <p>No orders yet.</p>
+            <p className="text-center">No orders yet.</p>
           ) : (
             <ul className="space-y-6 flex flex-col items-center justify-center">
               {orders
@@ -44,11 +85,11 @@ const OrderHistory = () => {
                     className="p-6 bg-white bg-opacity-85 rounded-lg shadow-md w-full max-w-screen-md"
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <div>
+                      <div className="space-y-1">
                         <p className="text-sm">
                           Date: {new Date(order.date).toLocaleString()}
                         </p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm">
                           Transaction Hash:{" "}
                           <a
                             target="_blank"
@@ -58,6 +99,29 @@ const OrderHistory = () => {
                           >
                             {order.txnHash}
                           </a>
+                        </p>
+                        <p className="flex items-center text-sm">
+                          Type:
+                          <div className="ml-2 bg-green-100 rounded border border-green-800 px-1 text-green-700 font-medium">
+                            {order?.type ?? "-"}
+                          </div>
+                        </p>
+                        <p className="text-sm">
+                          Block Number: {order?.blockNumber ?? "-"}
+                        </p>
+                        <p className="text-sm">
+                          Block Timestamp: {order?.timestamp ?? "-"}
+                        </p>
+                        <p className="flex items-center text-sm">
+                          Status:{" "}
+                          <div className="ml-2 bg-green-600 px-1.5 py-0.5 text-white rounded-[42px]">
+                            {order?.status ?? "-"}
+                          </div>
+                        </p>
+                        <p className="text-sm">
+                          Actual Fee:{" "}
+                          {parseFloat(order?.actualFee ?? "0") / 1e18 ?? "-"}{" "}
+                          ETH
                         </p>
                       </div>
                     </div>
