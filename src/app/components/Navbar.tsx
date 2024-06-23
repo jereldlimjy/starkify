@@ -12,7 +12,9 @@ const Navbar = ({ handleCartClick }: { handleCartClick: any }) => {
       <div className="py-4 px-6">
         <Link href="/" className="flex items-center">
           <img src="/starkify-logo.png" alt="starkify" className="h-12 w-12" />
-          <span className="text-xl tracking-widest ml-2">starkify</span>
+          <span className="text-xl tracking-widest ml-2 text-[#1c1c84]">
+            starkify
+          </span>
         </Link>
       </div>
 
