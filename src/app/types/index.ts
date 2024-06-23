@@ -10,3 +10,14 @@ export type Token = {
 export interface BuyToken extends Token {
   buyAmount: number;
 }
+
+export type Order = {
+  date: string;
+  tokens: {
+    address: string;
+    symbol: string;
+    imageUrl: string;
+    buyAmount: number;
+  }[];
+  txnHash: string;
+};

@@ -14,6 +14,7 @@ import { removeFromCart, updateCartAmount } from "../utils/cartUtils";
 import CartIcon from "./CartIcon";
 import CloseIcon from "./CloseIcon";
 import SadIcon from "./SadIcon";
+import { Order } from "../types";
 
 const ETH_ADDRESS =
   "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7";
@@ -65,6 +66,11 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
     return fetchQuotes(params).then((quotes) => quotes[0]);
   };
 
+  const saveOrderToLocalStorage = (order: Order) => {
+    const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+    localStorage.setItem("orders", JSON.stringify([...existingOrders, order]));
+  };
+
   const handleRemove = (tokenAddress: string) => {
     setCartItems((prevCart) => removeFromCart(prevCart, tokenAddress));
   };
@@ -96,6 +102,20 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
 
       const multicall = await signer?.execute(calls.flat());
       await provider.waitForTransaction(multicall?.transaction_hash!!);
+
+      const order: Order = {
+        date: new Date().toISOString(),
+        tokens: cartItems.map((item) => ({
+          address: item.address,
+          symbol: item.symbol,
+          imageUrl: item.imageUrl ?? "",
+          buyAmount: item.buyAmount,
+        })),
+        txnHash: multicall?.transaction_hash!!,
+      };
+
+      saveOrderToLocalStorage(order);
+      setCartItems([]); // Clear cart after checkout
     } catch (err) {
       console.error(err);
     } finally {
@@ -107,7 +127,7 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ handleCartClick }) => {
     <>
       {/* Overlay */}
       {isDrawerOpen && (
-        <div className="fixed inset-0 z-40 bg-gray-100 bg-opacity-75 transition-opacity" />
+        <div className="fixed inset-0 z-40 bg-slate-200 bg-opacity-50 transition-opacity" />
       )}
 
       {/* Side Drawer */}

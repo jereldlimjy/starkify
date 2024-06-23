@@ -8,7 +8,7 @@ const Navbar = ({ handleCartClick }: { handleCartClick: any }) => {
   const [cartItems] = useAtom(cartItemsAtom);
 
   return (
-    <nav className="flex fixed justify-between items-center w-full h-[72px] z-10 border-b bg-white shadow-[0_4px_30px_#0000000d]">
+    <nav className="flex fixed justify-between items-center w-full h-[72px] z-10">
       <Link href="/">
         <div className="flex h-full items-center py-4 px-6">
           <span className="text-xl tracking-widest">starkify</span>
@@ -16,8 +16,14 @@ const Navbar = ({ handleCartClick }: { handleCartClick: any }) => {
       </Link>
 
       <div className="flex items-center py-4 px-6">
+        <Link href="/orders">
+          <div className="flex h-full items-center mr-8 hover:underline">
+            <span className="text-md">orders</span>
+          </div>
+        </Link>
+
         <button
-          className="relative mr-6 hover:cursor-pointer hover:scale-110"
+          className="relative mr-8 hover:cursor-pointer hover:scale-110"
           onClick={handleCartClick}
         >
           <CartIcon />

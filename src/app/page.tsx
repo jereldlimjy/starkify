@@ -27,7 +27,7 @@ const getTokens = async () => {
 
 export default function Home() {
   const [tokens, setTokens] = useState<Token[]>([]);
-  const [cartItems, setCartItems] = useAtom(cartItemsAtom);
+  const [_, setCartItems] = useAtom(cartItemsAtom);
   const [isDrawerOpen, setIsDrawerOpen] = useAtom(isDrawerOpenAtom);
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function Home() {
   return (
     <main>
       <Navbar handleCartClick={handleCartClick} />
-      <div className="absolute top-[72px] w-full bg-no-repeat bg-cover bg-center">
+      <div className="pt-[72px] w-full">
         <div className="flex justify-center">
           <div className="flex flex-col gap-4">
             {tokens.map((token) => (
