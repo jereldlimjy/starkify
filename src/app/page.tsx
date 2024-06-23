@@ -98,19 +98,23 @@ export default function Home() {
               </div>
             ))}
 
-            <div></div>
-            <p className="flex items-center space-x-2 justify-end">
-              <span className="text-sm text-gray-500">
-                Token data provided by
-              </span>
-              <a href="https://www.geckoterminal.com" target="_blank">
-                <img
-                  src="/gecko-terminal-logo.webp"
-                  alt="Gecko Terminal logo"
-                  className="h-6"
-                />
-              </a>
-            </p>
+            {!!tokens.length && (
+              <>
+                <div></div>
+                <p className="flex items-center space-x-2 justify-end">
+                  <span className="text-sm text-gray-500">
+                    Token data provided by
+                  </span>
+                  <a href="https://www.geckoterminal.com" target="_blank">
+                    <img
+                      src="/gecko-terminal-logo.webp"
+                      alt="Gecko Terminal logo"
+                      className="h-6"
+                    />
+                  </a>
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>
