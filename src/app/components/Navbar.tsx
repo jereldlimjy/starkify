@@ -9,11 +9,12 @@ const Navbar = ({ handleCartClick }: { handleCartClick: any }) => {
 
   return (
     <nav className="flex fixed justify-between bg-[#E6F0FF] border-b items-center w-full h-[72px] z-10">
-      <Link href="/">
-        <div className="flex h-full items-center py-4 px-6">
-          <span className="text-xl tracking-widest">starkify</span>
-        </div>
-      </Link>
+      <div className="py-4 px-6">
+        <Link href="/" className="flex items-center">
+          <img src="/starkify-logo.png" alt="starkify" className="h-12 w-12" />
+          <span className="text-xl tracking-widest ml-2">starkify</span>
+        </Link>
+      </div>
 
       <div className="flex items-center py-4 px-6">
         <Link href="/orders">
