@@ -12,6 +12,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Starkify",
   description: "Bringing the e-commerce experience to Starknet",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
